@@ -34,6 +34,9 @@ export default function App()
   const [showAddFriend, setShowAddFriend] = useState(false);
   const [friendList, setFriendList] = useState(initialFriends);
   const [selectedFriend, setSelectedFriend] = useState(null);
+  const [billValue, setBillValue] = useState("");
+  const [yourExpense, setYourExpense] = useState("");
+  const [biller, setBiller] = useState('user');
 
   function handleShowAddFriend()
   {
@@ -52,6 +55,26 @@ export default function App()
   {
     setSelectedFriend((selectedFriend) => selectedFriend === null ? friend : selectedFriend.id === friend.id ? null : friend);
     setShowAddFriend(false);
+    setBillValue("");
+    setYourExpense("");
+    setBiller("user");
+  }
+
+  function onBillValueChange(e)
+  {
+    setBillValue(() => Number(e.target.value));
+  }
+
+  function onYourExpenseChange(e)
+  {
+    setYourExpense(() => {
+      return Number(e.target.value) > billValue ? yourExpense : Number(e.target.value);
+    });
+  }
+
+  function onBillerChange(e)
+  {
+    setBiller(() => e.target.value);
   }
   
 
@@ -93,6 +116,12 @@ export default function App()
       <FormSplitBill
         selectedFriend = {selectedFriend} 
         handleSubmit = {handleSplitFormSubmit}
+        billValue = {billValue}
+        yourExpense = {yourExpense}
+        biller = {biller}
+        onBillValueChange = {onBillValueChange}
+        onYourExpenseChange = {onYourExpenseChange}
+        onBillerChange = {onBillerChange}
         key = {selectedFriend.id}
       />}
     </div>
@@ -172,30 +201,10 @@ function FormAddFriend({onAddFriend})
   )
 }
 
-function FormSplitBill({selectedFriend, handleSubmit})
+function FormSplitBill({selectedFriend, handleSubmit, yourExpense, billValue, biller, onBillValueChange, onYourExpenseChange, onBillerChange})
 {
 
-  const [billValue, setBillValue] = useState("");
-  const [yourExpense, setYourExpense] = useState("");
-  const [biller, setBiller] = useState('user');
   const friendExpense = billValue ? billValue - yourExpense : "";
-
-  function onBillValueChange(e)
-  {
-    setBillValue(() => Number(e.target.value));
-  }
-
-  function onYourExpenseChange(e)
-  {
-    setYourExpense(() => {
-      return Number(e.target.value) > billValue ? yourExpense : Number(e.target.value);
-    });
-  }
-
-  function onBillerChange(e)
-  {
-    setBiller(() => e.target.value);
-  }
 
   return (
     <form className="form-split-bill" onSubmit={handleSubmit} >
